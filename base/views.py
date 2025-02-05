@@ -4,13 +4,25 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from django.db import models  # Import models for aggregation
 from .models import Customer, Category, Product, Order
 from .serializers import UserSerializer, CustomerSerializer, CategorySerializer, ProductSerializer, OrderSerializer
 from .utils import send_order_email, send_order_sms
-from django.db import models
 
+
+
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+
+def main(request):
+    return HttpResponse("Successfully logged in!")
 
 class RegisterAdmin(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -56,13 +68,6 @@ class AverageProductPrice(APIView):
             return Response({'detail': 'No products found in this category'}, status=status.HTTP_404_NOT_FOUND)
         average_price = products.aggregate(models.Avg('price'))['price__avg']
         return Response({'average_price': average_price}, status=status.HTTP_200_OK)
-    
-
-
-
-
-
-
 
 class CreateCategory(APIView):
     permission_classes = [IsAuthenticated]

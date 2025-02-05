@@ -1,0 +1,22 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+</head>
+<body>
+    <h2>Sign Up</h2>
+    <form method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sign Up</button>
+    </form>
+    <h2>Or sign up with</h2>
+    <ul>
+        {% providers_media_js %}
+        {% for provider in socialaccount_providers %}
+            <li><a href="{% provider_login_url provider.id %}">{{ provider.name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
