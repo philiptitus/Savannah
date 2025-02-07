@@ -1,0 +1,39 @@
+
+{% block content %}
+<h2>Create Category</h2>
+<form id="create-category-form">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="name" class="form-label">Category Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Category</button>
+</form>
+
+<script>
+document.getElementById('create-category-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('name').value;
+
+    fetch('{% url "create-category" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ name: name })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.id) {
+            alert('Category created successfully!');
+        } else {
+            alert('Error: ' + JSON.stringify(data));
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
+{% endblock %}

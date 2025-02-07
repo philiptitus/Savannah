@@ -5,8 +5,7 @@ from .models import Customer, Category, Product, Order
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = '__all__'
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
@@ -25,7 +24,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'category', 'admin']
+        fields = ['id', 'name', 'description', 'price', 'category']
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:

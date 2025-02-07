@@ -1,0 +1,69 @@
+
+{% block content %}
+<h2>Create Order</h2>
+<form id="create-order-form">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="product" class="form-label">Product</label>
+        <select class="form-control" id="product" name="product" required>
+            <!-- Products will be populated here by JavaScript -->
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="quantity" class="form-label">Quantity</label>
+        <input type="number" class="form-control" id="quantity" name="quantity" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Order</button>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch products and populate the dropdown
+    fetch('{% url "product-list" %}', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const productSelect = document.getElementById('product');
+        data.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.id;
+            option.textContent = product.name;
+            productSelect.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Error:', error));
+
+    // Handle form submission
+    document.getElementById('create-order-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const product_id = document.getElementById('product').value;
+        const quantity = document.getElementById('quantity').value;
+
+        fetch('{% url "create-order" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ product_id: product_id, quantity: quantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.detail) {
+                alert('Order created successfully!');
+            } else {
+                alert('Error creating order: ' + JSON.stringify(data));
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+</script>
+{% endblock %}

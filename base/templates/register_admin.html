@@ -1,0 +1,32 @@
+
+{% block content %}
+<h2>Register Admin</h2>
+<form id="register-admin-form">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Toggle Admin Status</button>
+</form>
+
+<script>
+document.getElementById('register-admin-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    fetch('{% url "register-admin" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.detail) {
+            alert(data.detail);
+        } else {
+            alert('Error: ' + JSON.stringify(data));
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
+{% endblock %}
