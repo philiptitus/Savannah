@@ -13,6 +13,10 @@
         <label for="quantity" class="form-label">Quantity</label>
         <input type="number" class="form-control" id="quantity" name="quantity" required>
     </div>
+    <div class="mb-3">
+        <label for="phone_number" class="form-label">Phone Number</label>
+        <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+    </div>
     <button type="submit" class="btn btn-primary">Create Order</button>
 </form>
 
@@ -44,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const product_id = document.getElementById('product').value;
         const quantity = document.getElementById('quantity').value;
+        const phone_number = document.getElementById('phone_number').value;  // Add this line
 
         fetch('{% url "create-order" %}', {
             method: 'POST',
@@ -52,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 'X-CSRFToken': '{{ csrf_token }}'
             },
-            body: JSON.stringify({ product_id: product_id, quantity: quantity })
+            body: JSON.stringify({ product_id: product_id, quantity: quantity, phone_number: phone_number })  // Add phone_number here
         })
         .then(response => response.json())
         .then(data => {

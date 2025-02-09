@@ -16,4 +16,7 @@ urlpatterns = [
     path('product-list/', ProductList.as_view(), name='product-list'),  # Add this line
     path('category-list/', CategoryList.as_view(), name='category-list'),  # Add this line
     path('average-product-price/', AverageProductPrice.as_view(), name='average-product-price'),  # Update this line
+    path('register/', RegisterUser.as_view(), name='register'),
+    path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+
 ]

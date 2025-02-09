@@ -6,14 +6,15 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.db import models  # Import models for aggregation
 from .models import Customer, Category, Product, Order
-from .serializers import UserSerializer, CustomerSerializer, CategorySerializer, ProductSerializer, OrderSerializer
-from .utils import send_order_email, send_order_sms
+from .serializers import *
+from .utils import *
 
-
+import os
+from django.conf import settings
 
 
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
@@ -21,10 +22,82 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from base.serializers import *
 from django.db import IntegrityError
-
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views import View
+import json
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.validators import UnicodeUsernameValidator
+import os
 # Create your views here.
 
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+       def validate(self, attrs: dict[str, any]) -> dict[str, str]:
+        data = super().validate(attrs)
+        serializer = UserSerializerWithToken(self.user).data
+
+        for k, v in serializer.items():
+            data[k] = v
+
+
+
+        return data
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
+
+
+
+class RegisterUser(APIView):
+
+    def post(self, request):
+        data = request.data
+
+        # Check password length
+        if len(data['password']) < 8:
+            content = {'detail': 'Password must be at least 8 characters long.'}
+            return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check password for username and email
+        username_validator = UnicodeUsernameValidator()
+        if username_validator(data['password']):
+            content = {'detail': 'Password cannot contain username or email.'}
+            return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check for minimum number of upper and lowercase characters
+        uppercase_count = sum(1 for c in data['password'] if c.isupper())
+        lowercase_count = sum(1 for c in data['password'] if c.islower())
+        if uppercase_count < 1 or lowercase_count < 1:
+            content = {'detail': 'Password must contain at least one uppercase and lowercase character.'}
+            return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check for minimum number of digits and special characters
+        digit_count = sum(1 for c in data['password'] if c.isdigit())
+        special_count = sum(1 for c in data['password'] if not c.isalnum())
+        if digit_count < 1 or special_count < 1:
+            content = {'detail': 'Password must contain at least one digit and one special character.'}
+            return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create user
+        try:
+            user = User.objects.create_user(
+                first_name=data['name'],
+                username=data['email'],
+                email=data['email'],
+                password=data['password'],
+            )
+
+        except IntegrityError:
+            message = {'detail': 'User with this email already exists.'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = UserSerializer(user, many=False)
+        return Response(serializer.data)
 
 
 
@@ -85,21 +158,21 @@ class RegisterAdmin(APIView):
         user = request.user
 
         # Check if there is an existing admin
-        existing_admin = User.objects.filter(is_staff=True).exclude(id=user.id).first()
+        existing_admin = User.objects.filter(is_superuser=True).exclude(id=user.id).first()
 
-        if user.is_staff:
+        if user.is_superuser:
             # If the user is already an admin, deregister them
-            user.is_staff = False
+            user.is_superuser = False
             user.save()
             return Response({'detail': 'User deregistered as admin.'}, status=status.HTTP_200_OK)
         else:
             # If there is an existing admin, remove their admin status
             if existing_admin:
-                existing_admin.is_staff = False
+                existing_admin.is_superuser = False
                 existing_admin.save()
 
             # Register the current user as the sole admin
-            user.is_staff = True
+            user.is_superuser = True
             user.save()
             return Response({'detail': 'User registered as admin.'}, status=status.HTTP_200_OK)
 
@@ -107,7 +180,7 @@ class CreateProduct(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # if not request.user.is_staff:
+        # if not request.user.is_superuser:
         #     return Response({'detail': 'Only admins can create products.'}, status=status.HTTP_403_FORBIDDEN)
 
 
@@ -132,17 +205,20 @@ class CreateOrder(APIView):
 
         product_id = request.data.get('product_id')
         quantity = request.data.get('quantity')
+        phone_number = request.data.get('phone_number')  # Add this line
 
-        if not product_id or not quantity:
-            return Response({'detail': 'Product ID and quantity are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not product_id or not quantity or not phone_number:
+            return Response({'detail': 'Product ID, quantity, and phone number are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
             return Response({'detail': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        order = Order.objects.create(customer=customer, product=product, quantity=quantity)
+        order = Order.objects.create(customer=customer, product=product, quantity=quantity, phone_number=phone_number)  # Add phone_number here
         send_order_email(order)
+        # send_order_sms(order)
+        send_message(order, [order.phone_number], "5313")
         return Response({'detail': 'Order created successfully!'}, status=status.HTTP_201_CREATED)
 
 class AverageProductPrice(APIView):

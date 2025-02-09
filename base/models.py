@@ -29,6 +29,7 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
+    phone_number = models.CharField(max_length=15,default='')
     order_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

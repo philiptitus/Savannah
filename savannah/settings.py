@@ -156,6 +156,10 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Use environment variables fo
 
 
 
+AFRICASTALKING_USERNAME = env('AFRICASTALKING_USERNAME')
+AFRICASTALKING_API_KEY = env('AFRICASTALKING_API_KEY')
+
+
 
 SITE_ID = 1
 
@@ -182,7 +186,7 @@ from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
