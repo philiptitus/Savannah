@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: savannah
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: savannah
+  template:
+    metadata:
+      labels:
+        app: savannah
+    spec:
+      containers:
+      - name: savannah
+        image: savannah:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DJANGO_SETTINGS_MODULE
+          value: "your_project.settings"
+        - name: DATABASE_URL
+          value: "postgres://user:password@hostname:5432/dbname"
