@@ -62,5 +62,14 @@ jobs:
     - name: Run tests
       run: docker-compose exec web python manage.py test
 
+    - name: Capture Docker Logs
+      run: docker-compose logs > docker-compose-logs.txt
+
+    - name: Upload Docker Logs
+      uses: actions/upload-artifact@v2
+      with:
+        name: docker-compose-logs
+        path: docker-compose-logs.txt
+
     - name: Stop Docker Compose
       run: docker-compose down
