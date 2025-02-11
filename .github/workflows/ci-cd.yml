@@ -59,6 +59,7 @@ jobs:
     - name: Run Docker Compose
       run: docker-compose up -d --build
 
+
     - name: Check Docker Compose services
       run: docker-compose ps
 
@@ -68,14 +69,6 @@ jobs:
     - name: Run tests with coverage
       run: docker-compose exec web python -m coverage run --source='.' manage.py test
 
-    - name: Capture Docker Logs
-      run: docker-compose logs > docker-compose-logs.txt
-
-    - name: Upload Docker Logs
-      uses: actions/upload-artifact@v3
-      with:
-        name: docker-compose-logs
-        path: docker-compose-logs.txt
 
     - name: Stop Docker Compose
       run: docker-compose down
