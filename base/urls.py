@@ -18,5 +18,7 @@ urlpatterns = [
     path('average-product-price/', AverageProductPrice.as_view(), name='average-product-price'),  # Update this line
     path('register/', RegisterUser.as_view(), name='register'),
     path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('login-page/', TemplateView.as_view(template_name="login.html"), name='login-page'),  # Add this line
+    path('register-page/', TemplateView.as_view(template_name="register.html"), name='register-page'),  # Add this line
 
 ]

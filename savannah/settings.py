@@ -220,3 +220,9 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+
+
+
+
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "savannah.pythonanywhere.com"]

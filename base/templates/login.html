@@ -76,31 +76,45 @@
 
 </head>
 
-
-<h2>Register Admin</h2>
-<form id="register-admin-form">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-primary">Toggle Admin Status</button>
-</form>
+<div class="container mt-5">
+    <h2>Login</h2>
+    <form id="login-form">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Email</label>
+            <input type="email" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
 
 <script>
-document.getElementById('register-admin-form').addEventListener('submit', function(event) {
+document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    fetch('{% url "register-admin" %}', {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    fetch('{% url "token_obtain_pair" %}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             'X-CSRFToken': '{{ csrf_token }}'
-        }
+        },
+        body: JSON.stringify({ username: username, password: password })
     })
     .then(response => response.json())
     .then(data => {
-        if (data.detail) {
-            alert(data.detail);
+        if (data.access) {
+            localStorage.setItem('access_token', data.access);
+            localStorage.setItem('refresh_token', data.refresh);
+            window.location.href = '/';
         } else {
-            alert('Error: ' + JSON.stringify(data));
+            alert('Login failed: ' + JSON.stringify(data));
         }
     })
     .catch(error => console.error('Error:', error));

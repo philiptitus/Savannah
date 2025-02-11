@@ -76,31 +76,71 @@
 
 </head>
 
-
-<h2>Register Admin</h2>
-<form id="register-admin-form">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-primary">Toggle Admin Status</button>
-</form>
+<div class="container mt-5">
+    <h2>Register</h2>
+    <form id="register-form">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
 
 <script>
-document.getElementById('register-admin-form').addEventListener('submit', function(event) {
+document.getElementById('register-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    fetch('{% url "register-admin" %}', {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    // Password validation
+    const passwordErrors = [];
+    if (password.length < 8) {
+        passwordErrors.push('Password must be at least 8 characters long.');
+    }
+    if (!/[A-Z]/.test(password)) {
+        passwordErrors.push('Password must contain at least one uppercase character.');
+    }
+    if (!/[a-z]/.test(password)) {
+        passwordErrors.push('Password must contain at least one lowercase character.');
+    }
+    if (!/[0-9]/.test(password)) {
+        passwordErrors.push('Password must contain at least one digit.');
+    }
+    if (!/[^a-zA-Z0-9]/.test(password)) {
+        passwordErrors.push('Password must contain at least one special character.');
+    }
+    if (passwordErrors.length > 0) {
+        alert(passwordErrors.join('\n'));
+        return;
+    }
+
+    fetch('{% url "register" %}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             'X-CSRFToken': '{{ csrf_token }}'
-        }
+        },
+        body: JSON.stringify({ name: name, email: email, password: password })
     })
     .then(response => response.json())
     .then(data => {
-        if (data.detail) {
-            alert(data.detail);
+        if (data.id) {
+            alert('Registration successful!');
+            window.location.href = '/';
         } else {
-            alert('Error: ' + JSON.stringify(data));
+            alert('Registration failed: ' + JSON.stringify(data));
         }
     })
     .catch(error => console.error('Error:', error));
