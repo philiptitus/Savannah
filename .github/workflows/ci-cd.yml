@@ -59,6 +59,15 @@ jobs:
     - name: Run Docker Compose
       run: docker-compose up -d --build
 
+    - name: Wait for PostgreSQL to be ready
+      run: until docker-compose exec postgres pg_isready; do sleep 1; done
+
+    - name: Check Docker Compose services
+      run: docker-compose ps
+
+    - name: Check web service logs
+      run: docker-compose logs web
+
     - name: Run tests
       run: docker-compose exec web python manage.py test
 
