@@ -35,7 +35,6 @@ SECRET_KEY = 'django-insecure-xx!b!$cn=@qqzt7tytwy0dwi9pu$wpcz**b4_30h$&li%k(5&4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -250,4 +249,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "savannah.pythonanywhere.com"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",  # Localhost
+    "localhost",  # Localhost
+    "13.60.196.168",  # Your server's IP
+]
