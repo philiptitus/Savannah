@@ -65,8 +65,6 @@ jobs:
         AFRICASTALKING_API_KEY: ${{ secrets.AFRICASTALKING_API_KEY }}
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-    
-
 
     - name: Check Docker Compose services
       run: docker-compose ps
@@ -76,7 +74,6 @@ jobs:
 
     - name: Run tests with coverage
       run: docker-compose exec web python -m coverage run --source='.' manage.py test
-
 
     - name: Stop Docker Compose
       run: docker-compose down
