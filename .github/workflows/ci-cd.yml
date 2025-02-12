@@ -103,7 +103,7 @@ jobs:
     - name: Deploy to CodeDeploy
       run: |
         aws deploy create-deployment \
-          --application-name MyDjangoApp \
+          --application-name Savannah \
           --deployment-group-name MyDjangoAppDeploymentGroup \
           --deployment-config-name CodeDeployDefault.OneAtATime \
           --github-location repository=philiptitus/Savannah,commitId=${{ github.sha }}
