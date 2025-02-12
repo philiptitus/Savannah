@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, tag
 from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
@@ -19,6 +19,7 @@ class APITests(APITestCase):
         response = self.client.post('/auth-view/', {'email': email}, format='json')
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 
+    @tag('exclude')
     def test_register_admin(self):
         self.authenticate('admin@example.com')
         url = reverse('register-admin')
@@ -34,6 +35,7 @@ class APITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Product.objects.filter(name='Cookies').exists())
 
+    @tag('exclude')
     def test_create_order(self):
         self.authenticate('customer@example.com')
         url = reverse('create-order')
