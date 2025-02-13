@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import LiveServerTestCase
+from django.test import LiveServerTestCase, tag
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -55,14 +55,17 @@ class E2ETests(LiveServerTestCase):
         password_input.send_keys(Keys.RETURN)
         time.sleep(2)  # Wait for the login process to complete
 
+    @tag('e2e')
     def test_admin_login(self):
         self.register_user('admin44@example.com', 'Zgobjdh89.', 'admin44@example.com')
         self.login('admin44@example.com', 'Zgobjdh89.')
 
+    @tag('e2e')
     def test_customer_login(self):
         self.register_user('customer54@example.com', 'Zgobjdh89.', 'custome54@example.com')
         self.login('customer54@example.com', 'Zgobjdh89.')
 
+    @tag('e2e')
     def test_create_category(self):
         self.register_user('admin77@example.com', 'Zgobjdh89.', 'admin77@example.com')
         token = self.get_jwt_token('admin77@example.com', 'Zgobjdh89.')
@@ -71,6 +74,7 @@ class E2ETests(LiveServerTestCase):
         response = requests.post(self.live_server_url + '/categories/', headers=headers, json=data)
         self.assertEqual(response.status_code, 201)
 
+    @tag('e2e')
     def test_create_product(self):
         self.register_user('admin67@example.com', 'Zgobjdh89.', 'admin67@example.com')
         token = self.get_jwt_token('admin67@example.com', 'Zgobjdh89.')
@@ -92,6 +96,7 @@ class E2ETests(LiveServerTestCase):
         product_response = requests.post(self.live_server_url + '/products/', headers=headers, json=product_data)
         self.assertEqual(product_response.status_code, 201)
 
+    @tag('e2e')
     def test_average_product_price(self):
         self.register_user('customer88@example.com', 'Zgobjdh89.', 'customer88@example.com')
         token = self.get_jwt_token('customer88@example.com', 'Zgobjdh89.')
