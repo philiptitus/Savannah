@@ -255,3 +255,7 @@ ALLOWED_HOSTS = [
     "13.60.196.168",  # Your server's IP
     "savapi.duckdns.org"
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://savapi.duckdns.org',
+]
