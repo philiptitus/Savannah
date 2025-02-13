@@ -253,4 +253,5 @@ ALLOWED_HOSTS = [
     "127.0.0.1",  # Localhost
     "localhost",  # Localhost
     "13.60.196.168",  # Your server's IP
+    "savapi.duckdns.org"
 ]
