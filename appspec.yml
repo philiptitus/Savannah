@@ -3,6 +3,11 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/server
+    overwrite: true
+    exclude:
+      - .git
+      - .github
+      - .gitignore
 hooks:
   BeforeInstall:
     - location: scripts/clean.sh
