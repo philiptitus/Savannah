@@ -102,8 +102,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-north-1
 
-    - name: Make deploy script executable
-      run: chmod +x scripts/deploy.sh
+    - name: Make deploy and clean script executable
+      run: |
+        chmod +x scripts/deploy.sh
+        chmod +x scripts/clean.sh
 
     - name: Deploy to CodeDeploy
       run: |

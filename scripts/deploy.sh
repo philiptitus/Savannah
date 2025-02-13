@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to the application directory
-cd /home/ec2-user/myapp
+cd /home/ec2-user/server
 
 # Pull the latest changes from the main branch
 git pull origin main
