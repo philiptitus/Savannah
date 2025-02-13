@@ -112,48 +112,55 @@ To deploy the project using Gunicorn:
     gunicorn <project_name>.wsgi:application
     ```
 
-CI/CD Operations
+## CI/CD Operations
+
 This project includes a CI/CD pipeline configuration using GitHub Actions. The pipeline is defined in the ci-cd.yml file.
 
-CI/CD Pipeline Configuration
+## CI/CD Pipeline Steps
+
 The CI/CD pipeline performs the following steps:
 
-Checkout code: Checks out the code from the repository.
-Set up Docker Buildx: Sets up Docker Buildx for building Docker images.
-Cache Docker layers: Caches Docker layers to speed up the build process.
-Install Docker Compose: Installs Docker Compose.
-Build and push Docker image: Builds the Docker image.
-Run Docker Compose: Runs Docker Compose to start the services.
-Check Docker Compose services: Checks the status of Docker Compose services.
-Check web service logs: Checks the logs of the web service.
-Run tests with coverage: Runs the tests with coverage.
-Stop Docker Compose: Stops Docker Compose services.
-Install AWS CLI: Installs the AWS CLI.
-Configure AWS credentials: Configures AWS credentials.
-Make deploy script executable: Makes the deploy script executable.
-Deploy to CodeDeploy: Deploys the application to AWS CodeDeploy.
-Docker Compose Configuration
-The Docker Compose configuration is defined in the docker-compose.yml file. It includes the following services:
+1. **Checkout Code**: Checks out the code from the repository.
+2. **Set up Docker Buildx**: Sets up Docker Buildx for building Docker images.
+3. **Cache Docker Layers**: Caches Docker layers to speed up the build process.
+4. **Install Docker Compose**: Installs Docker Compose.
+5. **Build and Push Docker Image**: Builds the Docker image.
+6. **Run Docker Compose**: Runs Docker Compose to start the services.
+7. **Check Docker Compose Services**: Checks the status of Docker Compose services.
+8. **Check Web Service Logs**: Checks the logs of the web service.
+9. **Run Tests with Coverage**: Runs the tests with coverage.
+10. **Stop Docker Compose**: Stops Docker Compose services.
+11. **Install AWS CLI**: Installs the AWS CLI.
+12. **Configure AWS Credentials**: Configures AWS credentials.
+13. **Make Deploy Script Executable**: Makes the deploy script executable.
+14. **Deploy to CodeDeploy**: Deploys the application to AWS CodeDeploy.
 
-web: The Django application.
-db: The PostgreSQL database.
-Deployment Script
-The deployment script is defined in the deploy.sh file. It performs the following steps:
+## Docker Compose Configuration
 
-Navigate to the application directory.
-Pull the latest changes from the main branch.
-Stop running containers.
-Remove all unused containers, networks, images, and optionally, volumes.
-Build and start the containers.
-AppSpec Configuration
-The AppSpec configuration is defined in the appspec.yml file. It specifies the files to be copied and the hooks to be executed during the deployment process.
+The Docker Compose configuration is defined in the `docker-compose.yml` file. It includes the following services:
 
+- **web**: The Django application.
+- **db**: The PostgreSQL database.
+
+## Deployment Script
+
+The deployment script is defined in the `deploy.sh` file. It performs the following steps:
+
+1. Navigate to the application directory.
+2. Pull the latest changes from the main branch.
+3. Stop running containers.
+4. Remove all unused containers, networks, images, and optionally, volumes.
+5. Build and start the containers.
+
+## AppSpec Configuration
+
+The AppSpec configuration is defined in the `appspec.yml` file. It specifies the files to be copied and the hooks to be executed during the deployment process.
 
 ## Links
 
 - [GitHub Repository](https://github.com/philiptitus/Savannah.git)
 - [Postman Documentation](https://documenter.getpostman.com/view/31401198/2sAYX9o1RM)
-- [Live Deployed Application](http://13.60.196.168:8000/)
+- [Live Deployed Application](https://savapi.duckdns.org/)
 
 ## License
 

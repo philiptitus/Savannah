@@ -4,12 +4,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.firefox.options import Options
 from webdriver_manager.firefox import GeckoDriverManager
 import time
 import requests
 import logging
-import os
+
 
 class E2ETests(LiveServerTestCase):
     def setUp(self):
@@ -20,12 +19,7 @@ class E2ETests(LiveServerTestCase):
         gecko_path = GeckoDriverManager().install()
         logging.debug(f'GeckoDriver path: {gecko_path}')
         
-        # Set Firefox binary path conditionally
-        options = Options()
-        if os.getenv('IS_CI_CD') == 'true':
-            options.binary_location = '/usr/bin/firefox'
-        
-        self.browser = webdriver.Firefox(service=FirefoxService(gecko_path), options=options)
+        self.browser = webdriver.Firefox(service=FirefoxService(gecko_path))
         self.admin_user = User.objects.create_user(username='admin22@example.com', password='Zgobjdh89.', email='admin22@example.com', is_superuser=True)
         self.customer_user = User.objects.create_user(username='custome33@example.com', password='Zgobjdh89.', email='customer33@example.com')
 
@@ -54,7 +48,7 @@ class E2ETests(LiveServerTestCase):
         password_input.send_keys(password)
         password_input.send_keys(Keys.RETURN)
         time.sleep(2)  # Wait for the login process to complete
-
+    
     @tag('e2e')
     def test_admin_login(self):
         self.register_user('admin44@example.com', 'Zgobjdh89.', 'admin44@example.com')
@@ -62,7 +56,7 @@ class E2ETests(LiveServerTestCase):
 
     @tag('e2e')
     def test_customer_login(self):
-        self.register_user('customer54@example.com', 'Zgobjdh89.', 'custome54@example.com')
+        self.register_user('customer54@example.com', 'Zgobjdh89.', 'customer54@example.com')
         self.login('customer54@example.com', 'Zgobjdh89.')
 
     @tag('e2e')
@@ -95,6 +89,7 @@ class E2ETests(LiveServerTestCase):
         }
         product_response = requests.post(self.live_server_url + '/products/', headers=headers, json=product_data)
         self.assertEqual(product_response.status_code, 201)
+
 
     @tag('e2e')
     def test_average_product_price(self):

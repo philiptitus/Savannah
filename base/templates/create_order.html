@@ -1,4 +1,3 @@
-
 {% block content %}
 <head>
     {% load static %}
@@ -119,13 +118,25 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => console.error('Error:', error));
 
+    // Function to validate Kenyan phone number
+    function validatePhoneNumber(phoneNumber) {
+        const regex = /^\+254\d{9}$/;
+        return regex.test(phoneNumber);
+    }
+
     // Handle form submission
     document.getElementById('create-order-form').addEventListener('submit', function(event) {
         event.preventDefault();
 
         const product_id = document.getElementById('product').value;
         const quantity = document.getElementById('quantity').value;
-        const phone_number = document.getElementById('phone_number').value;  // Add this line
+        const phone_number = document.getElementById('phone_number').value;
+
+        // Validate phone number
+        if (!validatePhoneNumber(phone_number)) {
+            alert('Error: Phone number must be in the format +254XXXXXXXXX, where X is a digit.');
+            return;
+        }
 
         fetch('{% url "create-order" %}', {
             method: 'POST',
@@ -134,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 'X-CSRFToken': '{{ csrf_token }}'
             },
-            body: JSON.stringify({ product_id: product_id, quantity: quantity, phone_number: phone_number })  // Add phone_number here
+            body: JSON.stringify({ product_id: product_id, quantity: quantity, phone_number: phone_number })
         })
         .then(response => response.json())
         .then(data => {

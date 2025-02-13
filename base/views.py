@@ -197,6 +197,7 @@ class CreateOrder(APIView):
 
     def post(self, request):
         user = request.user
+        print(f"user is {user.email}")
 
         # Ensure the user has a customer object
         if not hasattr(user, 'customer'):
