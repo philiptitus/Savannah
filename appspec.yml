@@ -8,6 +8,7 @@ files:
       - .git
       - .github
       - .gitignore
+file_exists_behavior: OVERWRITE
 hooks:
   BeforeInstall:
     - location: scripts/clean.sh
