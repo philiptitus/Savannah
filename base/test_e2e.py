@@ -4,10 +4,12 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options
 from webdriver_manager.firefox import GeckoDriverManager
 import time
 import requests
 import logging
+import os
 
 class E2ETests(LiveServerTestCase):
     def setUp(self):
@@ -18,7 +20,12 @@ class E2ETests(LiveServerTestCase):
         gecko_path = GeckoDriverManager().install()
         logging.debug(f'GeckoDriver path: {gecko_path}')
         
-        self.browser = webdriver.Firefox(service=FirefoxService(gecko_path))
+        # Set Firefox binary path conditionally
+        options = Options()
+        if os.getenv('IS_CI_CD') == 'true':
+            options.binary_location = '/usr/bin/firefox'
+        
+        self.browser = webdriver.Firefox(service=FirefoxService(gecko_path), options=options)
         self.admin_user = User.objects.create_user(username='admin22@example.com', password='Zgobjdh89.', email='admin22@example.com', is_superuser=True)
         self.customer_user = User.objects.create_user(username='custome33@example.com', password='Zgobjdh89.', email='customer33@example.com')
 
