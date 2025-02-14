@@ -258,4 +258,6 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://savapi.duckdns.org',
+    'http://savapi.duckdns.org'
+
 ]
