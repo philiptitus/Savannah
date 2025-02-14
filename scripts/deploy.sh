@@ -14,3 +14,6 @@ sudo docker system prune -a -f --volumes
 
 # Build and start the containers
 sudo docker-compose up --build -d
+
+#restart nginx
+sudo systemctl restart nginx
